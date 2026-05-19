@@ -6,163 +6,298 @@
 <title>Vem aí um som muito doido</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #0f0f13;
-    color: #e8e8f0;
-    padding: 32px 24px;
-    min-height: 100vh;
-  }
-  header { text-align: center; margin-bottom: 40px; }
-  header h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.04em; color: #fff; }
 
+  body {
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    background: #0c0c10;
+    color: #e8e8f0;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: padding-bottom 0.35s ease;
+  }
+  body.player-open { padding-bottom: 188px; }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 48px 24px 36px;
+  }
+  header h1 {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── GRID ── */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
-    gap: 18px;
-    max-width: 1400px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
+    max-width: 1500px;
     margin: 0 auto;
+    padding: 0 20px 32px;
   }
+
+  /* ── CARD ── */
   .card {
-    background: #18181f;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #2a2a35;
+    background: #16161e;
+    border-radius: 14px;
+    border: 1px solid #242430;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    transition: border-color 0.2s;
   }
+  .card:hover { border-color: #38384a; }
+
   .card-header {
-    padding: 13px 17px 11px;
+    padding: 14px 18px 12px;
     display: flex;
     align-items: center;
     gap: 10px;
-    border-bottom: 1px solid #2a2a35;
+    border-bottom: 1px solid #1e1e2a;
   }
-  .card-header .badge { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-  .card-header h2 { font-size: 0.88rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
-  .card-header .count { margin-left: auto; font-size: 0.68rem; color: #555; letter-spacing: 0.05em; white-space: nowrap; }
+  .badge { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .card-header h2 {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .count { margin-left: auto; font-size: 0.65rem; color: #44445a; white-space: nowrap; }
 
-  .members-row { padding: 9px 17px; border-bottom: 1px solid #22222c; display: flex; flex-wrap: wrap; gap: 5px; }
-  .member-chip { font-size: 0.68rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #22222c; color: #aaa; border: 1px solid #2e2e3a; }
-  .member-chip.question { color: #888; font-style: italic; }
+  .members-row {
+    padding: 8px 18px;
+    border-bottom: 1px solid #1e1e2a;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .chip {
+    font-size: 0.66rem;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    background: #1e1e2a;
+    color: #888;
+    border: 1px solid #2a2a3a;
+  }
+  .chip.q { font-style: italic; color: #666; }
 
-  .setlist { padding: 11px 17px 0; flex: 1; }
-  .setlist ol { list-style: none; counter-reset: song; }
+  /* ── SETLIST ── */
+  .setlist { padding: 10px 18px 0; flex: 1; }
+  .setlist ol { list-style: none; counter-reset: s; }
   .setlist ol li {
-    counter-increment: song;
+    counter-increment: s;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 5px 0;
-    border-bottom: 1px solid #1e1e27;
+    gap: 9px;
+    padding: 6px 0;
+    border-bottom: 1px solid #1a1a24;
     font-size: 0.8rem;
-    color: #ccc;
-    transition: color 0.15s;
+    color: #b0b0c8;
     cursor: pointer;
+    border-radius: 4px;
+    transition: color 0.12s, background 0.12s;
+    padding-left: 4px;
+    padding-right: 4px;
   }
   .setlist ol li:last-child { border-bottom: none; }
-  .setlist ol li:hover { color: #fff; }
-  .setlist ol li:hover .play-icon { opacity: 1; }
+  .setlist ol li:hover { color: #fff; background: #1e1e2c; }
+  .setlist ol li.playing { color: #fff; }
   .setlist ol li::before {
-    content: counter(song, decimal-leading-zero);
-    font-size: 0.63rem;
+    content: counter(s, decimal-leading-zero);
+    font-size: 0.6rem;
     font-weight: 700;
-    min-width: 20px;
-    letter-spacing: 0.04em;
+    min-width: 22px;
+    flex-shrink: 0;
+    opacity: 0.4;
+  }
+  .setlist ol li.playing::before { opacity: 1; }
+  .song-name { flex: 1; }
+  .eq {
+    display: none;
+    gap: 2px;
+    align-items: flex-end;
+    height: 14px;
     flex-shrink: 0;
   }
-  .song-name { flex: 1; }
-  .play-icon { opacity: 0; transition: opacity 0.15s; font-size: 0.72rem; flex-shrink: 0; }
+  .eq span {
+    width: 3px;
+    background: currentColor;
+    border-radius: 2px;
+    animation: eq 0.8s ease-in-out infinite alternate;
+  }
+  .eq span:nth-child(2) { animation-delay: 0.2s; }
+  .eq span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes eq {
+    0%  { height: 4px; }
+    100%{ height: 13px; }
+  }
+  .setlist ol li.playing .eq { display: flex; }
+  .setlist ol li.playing .play-icon { display: none; }
+  .play-icon { font-size: 0.65rem; opacity: 0; flex-shrink: 0; transition: opacity 0.12s; }
+  .setlist ol li:hover .play-icon { opacity: 0.6; }
 
-  .setlist ol li.active { color: #fff; }
-  .setlist ol li.active .play-icon { opacity: 1; }
+  /* ── FOOTER ── */
+  .card-footer {
+    padding: 9px 18px 12px;
+    margin-top: 10px;
+    border-top: 1px solid #1e1e2a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dur-label { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #33333f; }
+  .dur-value { font-size: 0.78rem; font-weight: 800; }
+  .dur-note { font-size: 0.56rem; color: #2e2e3a; text-align: right; margin-top: 2px; font-style: italic; }
 
-  .player-wrap { display: none; padding: 10px 17px; border-top: 1px solid #22222c; }
-  .player-wrap.open { display: block; }
-  .player-wrap iframe { width: 100%; height: 80px; border: none; border-radius: 8px; }
-  .player-label { font-size: 0.65rem; color: #555; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
-  .player-label span { font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
-  .player-close { cursor: pointer; color: #444; font-size: 0.9rem; padding: 0 2px; transition: color 0.15s; }
-  .player-close:hover { color: #aaa; }
+  /* ── GLOBAL STICKY PLAYER ── */
+  #global-player {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 180px;
+    background: #111118;
+    border-top: 1px solid #2a2a3a;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    z-index: 100;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.7);
+  }
+  #global-player.open { transform: translateY(0); }
 
-  .card-footer { margin-top: 11px; padding: 9px 17px 13px; border-top: 1px solid #22222c; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .duration-label { font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; color: #444; }
-  .duration-value { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em; }
-  .duration-note { font-size: 0.6rem; color: #3a3a4a; font-style: italic; text-align: right; margin-top: 2px; }
+  #player-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    min-width: 160px;
+    max-width: 200px;
+    border-right: 1px solid #1e1e2a;
+    gap: 4px;
+  }
+  #player-band {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  #player-song {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+  #player-close {
+    margin-top: 10px;
+    font-size: 0.65rem;
+    color: #444;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    width: fit-content;
+    padding: 2px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  #player-close:hover { color: #aaa; border-color: #aaa; }
 
+  #player-iframe-wrap {
+    flex: 1;
+    padding: 12px 16px 12px 0;
+    display: flex;
+    align-items: center;
+  }
+  #player-iframe-wrap iframe {
+    width: 100%;
+    height: 152px;
+    border: none;
+    border-radius: 10px;
+  }
+
+  /* ── ACCENT COLORS ── */
   .minimal .badge { background: #7c6af5; }
   .minimal .card-header { border-left: 3px solid #7c6af5; }
-  .minimal .setlist ol li::before { color: #5444b0; }
-  .minimal .duration-value { color: #7c6af5; }
-  .minimal .play-icon { color: #7c6af5; }
+  .minimal .setlist ol li::before,
+  .minimal .setlist ol li.playing { color: #9d8fff; }
+  .minimal .dur-value { color: #7c6af5; }
+  .minimal .eq span { color: #9d8fff; }
 
   .ratm .badge { background: #e84040; }
   .ratm .card-header { border-left: 3px solid #e84040; }
+  .ratm .setlist ol li.playing { color: #ff6060; }
   .ratm .setlist ol li::before { color: #a02c2c; }
-  .ratm .duration-value { color: #e84040; }
-  .ratm .play-icon { color: #e84040; }
+  .ratm .dur-value { color: #e84040; }
+  .ratm .eq span { color: #ff6060; }
 
   .nirvana .badge { background: #4da6ff; }
   .nirvana .card-header { border-left: 3px solid #4da6ff; }
+  .nirvana .setlist ol li.playing { color: #7dbfff; }
   .nirvana .setlist ol li::before { color: #2d6aad; }
-  .nirvana .duration-value { color: #4da6ff; }
-  .nirvana .play-icon { color: #4da6ff; }
+  .nirvana .dur-value { color: #4da6ff; }
+  .nirvana .eq span { color: #7dbfff; }
 
   .linkin .badge { background: #f5a623; }
   .linkin .card-header { border-left: 3px solid #f5a623; }
+  .linkin .setlist ol li.playing { color: #ffc55a; }
   .linkin .setlist ol li::before { color: #a87200; }
-  .linkin .duration-value { color: #f5a623; }
-  .linkin .play-icon { color: #f5a623; }
+  .linkin .dur-value { color: #f5a623; }
+  .linkin .eq span { color: #ffc55a; }
 
   .paramore .badge { background: #f53ca3; }
   .paramore .card-header { border-left: 3px solid #f53ca3; }
+  .paramore .setlist ol li.playing { color: #ff70c0; }
   .paramore .setlist ol li::before { color: #a0296a; }
-  .paramore .duration-value { color: #f53ca3; }
-  .paramore .play-icon { color: #f53ca3; }
+  .paramore .dur-value { color: #f53ca3; }
+  .paramore .eq span { color: #ff70c0; }
 
   .zonta .badge { background: #3cd68a; }
   .zonta .card-header { border-left: 3px solid #3cd68a; }
+  .zonta .setlist ol li.playing { color: #5ff0a0; }
   .zonta .setlist ol li::before { color: #289e61; }
-  .zonta .duration-value { color: #3cd68a; }
-  .zonta .play-icon { color: #3cd68a; }
+  .zonta .dur-value { color: #3cd68a; }
+  .zonta .eq span { color: #5ff0a0; }
 </style>
 </head>
 <body>
+
 <header>
   <h1>Vem aí um som muito doido 🤘</h1>
 </header>
+
 <div class="grid">
 
   <!-- MINIMAL -->
   <div class="card minimal">
     <div class="card-header"><div class="badge"></div><h2>Minimal</h2><span class="count">14 músicas</span></div>
     <div class="members-row">
-      <span class="member-chip">Laura</span><span class="member-chip">Markin</span><span class="member-chip">Paulin</span>
-      <span class="member-chip">Jeffin</span><span class="member-chip">Malik</span><span class="member-chip">Danilo</span>
+      <span class="chip">Laura</span><span class="chip">Markin</span><span class="chip">Paulin</span>
+      <span class="chip">Jeffin</span><span class="chip">Malik</span><span class="chip">Danilo</span>
     </div>
     <div class="setlist"><ol>
-      <li data-id="5Uq4YtuGKIzpPkdiYnDNTb"><span class="song-name">Quase um Mistério</span><span class="play-icon">▶</span></li>
-      <li data-id="7urYXb1jQmYP99oDIvFHYs"><span class="song-name">De Outra Encarnação</span><span class="play-icon">▶</span></li>
-      <li data-id="0KpI6ZeXizcWFzCJxJc07H"><span class="song-name">Primeiro Ato</span><span class="play-icon">▶</span></li>
-      <li data-id="7hOs7qbIjGW4E0U9PyFaGL"><span class="song-name">Calendário</span><span class="play-icon">▶</span></li>
-      <li data-id="4lY95OMGb9WxP6IYut64ir"><span class="song-name">Shake It Out</span><span class="play-icon">▶</span></li>
-      <li data-id="0Oqc0kKFsQ6MhFOLBNZIGX"><span class="song-name">Doin Time</span><span class="play-icon">▶</span></li>
-      <li data-id="6WKVRG34Xl8AXXGJElZBBr"><span class="song-name">Happier Than Ever</span><span class="play-icon">▶</span></li>
-      <li data-id="7AxpjFiedFhyeWa7lsSOcC"><span class="song-name">Green Light</span><span class="play-icon">▶</span></li>
-      <li data-id="5L1dYRBS3OmnTfeTZVQH1F"><span class="song-name">Drop The Game</span><span class="play-icon">▶</span></li>
-      <li data-id="1PXsUXSM3LF2XNSkmIldPb"><span class="song-name">Little Black Submarines</span><span class="play-icon">▶</span></li>
-      <li data-id="0AxeFCTHGxyZ7wyHsRkmpS"><span class="song-name">Natural</span><span class="play-icon">▶</span></li>
-      <li data-id="5aWhs651KYM26HYM16kRdk"><span class="song-name">The Man</span><span class="play-icon">▶</span></li>
-      <li data-id="0Kq34bgBfm4S4rvCNQhFV9"><span class="song-name">Little Talks</span><span class="play-icon">▶</span></li>
-      <li data-id="456WNXWhDwYOSf5SpTuqxd"><span class="song-name">Dog Days Are Over</span><span class="play-icon">▶</span></li>
+      <li data-id="5Uq4YtuGKIzpPkdiYnDNTb" data-band="Minimal"><span class="song-name">Quase um Mistério</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="7urYXb1jQmYP99oDIvFHYs" data-band="Minimal"><span class="song-name">De Outra Encarnação</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0KpI6ZeXizcWFzCJxJc07H" data-band="Minimal"><span class="song-name">Primeiro Ato</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="7hOs7qbIjGW4E0U9PyFaGL" data-band="Minimal"><span class="song-name">Calendário</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="4lY95OMGb9WxP6IYut64ir" data-band="Minimal"><span class="song-name">Shake It Out</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0Oqc0kKFsQ6MhFOLBNZIGX" data-band="Minimal"><span class="song-name">Doin Time</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="6WKVRG34Xl8AXXGJElZBBr" data-band="Minimal"><span class="song-name">Happier Than Ever</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="7AxpjFiedFhyeWa7lsSOcC" data-band="Minimal"><span class="song-name">Green Light</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="5L1dYRBS3OmnTfeTZVQH1F" data-band="Minimal"><span class="song-name">Drop The Game</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1PXsUXSM3LF2XNSkmIldPb" data-band="Minimal"><span class="song-name">Little Black Submarines</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0AxeFCTHGxyZ7wyHsRkmpS" data-band="Minimal"><span class="song-name">Natural</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="5aWhs651KYM26HYM16kRdk" data-band="Minimal"><span class="song-name">The Man</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0Kq34bgBfm4S4rvCNQhFV9" data-band="Minimal"><span class="song-name">Little Talks</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="456WNXWhDwYOSf5SpTuqxd" data-band="Minimal"><span class="song-name">Dog Days Are Over</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
     </ol></div>
-    <div class="player-wrap" id="pw-minimal">
-      <div class="player-label"><span id="pl-minimal"></span><span class="player-close" onclick="closePlayer('minimal')">✕</span></div>
-      <iframe id="pf-minimal" src="" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
     <div class="card-footer">
-      <span class="duration-label">⏱ Duração estimada</span>
-      <div><div class="duration-value">~58 min</div><div class="duration-note">4 músicas c/ dur. estimada</div></div>
+      <span class="dur-label">⏱ Duração estimada</span>
+      <div><div class="dur-value">~58 min</div><div class="dur-note">4 músicas c/ dur. estimada</div></div>
     </div>
   </div>
 
@@ -170,25 +305,20 @@
   <div class="card ratm">
     <div class="card-header"><div class="badge"></div><h2>Rage Against the Machine</h2><span class="count">7 músicas</span></div>
     <div class="members-row">
-      <span class="member-chip">Neto</span><span class="member-chip">Markin</span>
-      <span class="member-chip">Paulin</span><span class="member-chip">Higor</span>
+      <span class="chip">Neto</span><span class="chip">Markin</span><span class="chip">Paulin</span><span class="chip">Higor</span>
     </div>
     <div class="setlist"><ol>
-      <li data-id="59WN2psjkt1tyaxjspN8fp"><span class="song-name">Killing in the Name</span><span class="play-icon">▶</span></li>
-      <li data-id="0tZ3mElWcr74OOhKEiNz1x"><span class="song-name">Bulls on Parade</span><span class="play-icon">▶</span></li>
-      <li data-id="1wsRitfRRtWyEapl0q22o8"><span class="song-name">Guerrilla Radio</span><span class="play-icon">▶</span></li>
-      <li data-id="66jNN4DZ15cIdihmqMGWG5"><span class="song-name">Know Your Enemy</span><span class="play-icon">▶</span></li>
-      <li data-id="1MQTmpYOZ6fcMQc56Hdo7T"><span class="song-name">Sleep Now in the Fire</span><span class="play-icon">▶</span></li>
-      <li data-id="7lmeHLHBe4nmXzuXc0HDjk"><span class="song-name">Testify</span><span class="play-icon">▶</span></li>
-      <li data-id="11cxKUEgnVAlesUKt4e3br"><span class="song-name">Bullet in the Head</span><span class="play-icon">▶</span></li>
+      <li data-id="59WN2psjkt1tyaxjspN8fp" data-band="Rage Against the Machine"><span class="song-name">Killing in the Name</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0tZ3mElWcr74OOhKEiNz1x" data-band="Rage Against the Machine"><span class="song-name">Bulls on Parade</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1wsRitfRRtWyEapl0q22o8" data-band="Rage Against the Machine"><span class="song-name">Guerrilla Radio</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="66jNN4DZ15cIdihmqMGWG5" data-band="Rage Against the Machine"><span class="song-name">Know Your Enemy</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1MQTmpYOZ6fcMQc56Hdo7T" data-band="Rage Against the Machine"><span class="song-name">Sleep Now in the Fire</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="7lmeHLHBe4nmXzuXc0HDjk" data-band="Rage Against the Machine"><span class="song-name">Testify</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="11cxKUEgnVAlesUKt4e3br" data-band="Rage Against the Machine"><span class="song-name">Bullet in the Head</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
     </ol></div>
-    <div class="player-wrap" id="pw-ratm">
-      <div class="player-label"><span id="pl-ratm"></span><span class="player-close" onclick="closePlayer('ratm')">✕</span></div>
-      <iframe id="pf-ratm" src="" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
     <div class="card-footer">
-      <span class="duration-label">⏱ Duração estimada</span>
-      <div class="duration-value">~30 min</div>
+      <span class="dur-label">⏱ Duração estimada</span>
+      <div class="dur-value">~30 min</div>
     </div>
   </div>
 
@@ -196,23 +326,19 @@
   <div class="card nirvana">
     <div class="card-header"><div class="badge"></div><h2>Nirvana</h2><span class="count">5 músicas</span></div>
     <div class="members-row">
-      <span class="member-chip">Hugo</span><span class="member-chip">Markin</span><span class="member-chip">Paulin</span>
-      <span class="member-chip">Volpi</span><span class="member-chip question">Jeffin?</span>
+      <span class="chip">Hugo</span><span class="chip">Markin</span><span class="chip">Paulin</span>
+      <span class="chip">Volpi</span><span class="chip q">Jeffin?</span>
     </div>
     <div class="setlist"><ol>
-      <li data-id="11LmqTE2naFULdEP94AUBa"><span class="song-name">Heart-Shaped Box</span><span class="play-icon">▶</span></li>
-      <li data-id="1Ic9pKxGSJGM0LKeqf6lGe"><span class="song-name">All Apologies</span><span class="play-icon">▶</span></li>
-      <li data-id="30HCB1FoE77IfGRyNv4eFq"><span class="song-name">In Bloom</span><span class="play-icon">▶</span></li>
-      <li data-id="2YodwKJnbPyNKe8XXSE9V7"><span class="song-name">Lithium</span><span class="play-icon">▶</span></li>
-      <li data-id="0O4Yt3iHNIZGFE3uhFLu6I"><span class="song-name">About a Girl</span><span class="play-icon">▶</span></li>
+      <li data-id="11LmqTE2naFULdEP94AUBa" data-band="Nirvana"><span class="song-name">Heart-Shaped Box</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1Ic9pKxGSJGM0LKeqf6lGe" data-band="Nirvana"><span class="song-name">All Apologies</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="30HCB1FoE77IfGRyNv4eFq" data-band="Nirvana"><span class="song-name">In Bloom</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="2YodwKJnbPyNKe8XXSE9V7" data-band="Nirvana"><span class="song-name">Lithium</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0O4Yt3iHNIZGFE3uhFLu6I" data-band="Nirvana"><span class="song-name">About a Girl</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
     </ol></div>
-    <div class="player-wrap" id="pw-nirvana">
-      <div class="player-label"><span id="pl-nirvana"></span><span class="player-close" onclick="closePlayer('nirvana')">✕</span></div>
-      <iframe id="pf-nirvana" src="" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
     <div class="card-footer">
-      <span class="duration-label">⏱ Duração estimada</span>
-      <div class="duration-value">~20 min</div>
+      <span class="dur-label">⏱ Duração estimada</span>
+      <div class="dur-value">~20 min</div>
     </div>
   </div>
 
@@ -220,23 +346,19 @@
   <div class="card linkin">
     <div class="card-header"><div class="badge"></div><h2>Linkin Park</h2><span class="count">5 músicas</span></div>
     <div class="members-row">
-      <span class="member-chip">Raul</span><span class="member-chip">Neto</span><span class="member-chip">Markin</span>
-      <span class="member-chip">Paulin</span><span class="member-chip">Volpi</span><span class="member-chip">Jeffin</span>
+      <span class="chip">Raul</span><span class="chip">Neto</span><span class="chip">Markin</span>
+      <span class="chip">Paulin</span><span class="chip">Volpi</span><span class="chip">Jeffin</span>
     </div>
     <div class="setlist"><ol>
-      <li data-id="1uYnCSJydGbT9y4pJLh0Xr"><span class="song-name">Points of Authority</span><span class="play-icon">▶</span></li>
-      <li data-id="4QjRMKFiNIQBGOa7z7aavJ"><span class="song-name">Faint</span><span class="play-icon">▶</span></li>
-      <li data-id="24Z9OmvvH4ADM5BwTk9l72"><span class="song-name">Crawling</span><span class="play-icon">▶</span></li>
-      <li data-id="1c162st6mztGwnCllaJhcU"><span class="song-name">A Place For My Head</span><span class="play-icon">▶</span></li>
-      <li data-id="0YLKCq0pqNE6pF0OuioD9I"><span class="song-name">With You</span><span class="play-icon">▶</span></li>
+      <li data-id="1uYnCSJydGbT9y4pJLh0Xr" data-band="Linkin Park"><span class="song-name">Points of Authority</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="4Yf5bqU3NK4kNOypcrLYwU" data-band="Linkin Park"><span class="song-name">Faint</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="4QjRMKFiNIQBGOa7z7aavJ" data-band="Linkin Park"><span class="song-name">Crawling</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="24Z9OmvvH4ADM5BwTk9l72" data-band="Linkin Park"><span class="song-name">A Place For My Head</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0YLKCq0pqNE6pF0OuioD9I" data-band="Linkin Park"><span class="song-name">With You</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
     </ol></div>
-    <div class="player-wrap" id="pw-linkin">
-      <div class="player-label"><span id="pl-linkin"></span><span class="player-close" onclick="closePlayer('linkin')">✕</span></div>
-      <iframe id="pf-linkin" src="" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
     <div class="card-footer">
-      <span class="duration-label">⏱ Duração estimada</span>
-      <div class="duration-value">~16 min</div>
+      <span class="dur-label">⏱ Duração estimada</span>
+      <div class="dur-value">~16 min</div>
     </div>
   </div>
 
@@ -244,24 +366,19 @@
   <div class="card paramore">
     <div class="card-header"><div class="badge"></div><h2>Paramore</h2><span class="count">5 músicas</span></div>
     <div class="members-row">
-      <span class="member-chip">Laura</span><span class="member-chip">Markin</span><span class="member-chip">Paulin</span>
-      <span class="member-chip">Jeffin</span><span class="member-chip">Malik</span><span class="member-chip">Danilo</span>
-      <span class="member-chip question">Volpi?</span>
+      <span class="chip">Laura</span><span class="chip">Markin</span><span class="chip">Paulin</span>
+      <span class="chip">Jeffin</span><span class="chip">Malik</span><span class="chip">Danilo</span><span class="chip q">Volpi?</span>
     </div>
     <div class="setlist"><ol>
-      <li data-id="6SpLc7EXZIPpy0sVko0aoU"><span class="song-name">Misery Business</span><span class="play-icon">▶</span></li>
-      <li data-id="47No93LxERvV6MtOAmQzHS"><span class="song-name">Ignorance</span><span class="play-icon">▶</span></li>
-      <li data-id="1JdKrFyoU05abww0Zv0ayQ"><span class="song-name">That's What You Get</span><span class="play-icon">▶</span></li>
-      <li data-id="3cCREBIci0lFQ3cZuV8Dt3"><span class="song-name">Monster</span><span class="play-icon">▶</span></li>
-      <li data-id="4o6pm3wFY5E022X2sQnZaK"><span class="song-name">Ain't Fun</span><span class="play-icon">▶</span></li>
+      <li data-id="6SpLc7EXZIPpy0sVko0aoU" data-band="Paramore"><span class="song-name">Misery Business</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="47No93LxERvV6MtOAmQzHS" data-band="Paramore"><span class="song-name">Ignorance</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1JdKrFyoU05abww0Zv0ayQ" data-band="Paramore"><span class="song-name">That's What You Get</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="3cCREBIci0lFQ3cZuV8Dt3" data-band="Paramore"><span class="song-name">Monster</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="4o6pm3wFY5E022X2sQnZaK" data-band="Paramore"><span class="song-name">Ain't Fun</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
     </ol></div>
-    <div class="player-wrap" id="pw-paramore">
-      <div class="player-label"><span id="pl-paramore"></span><span class="player-close" onclick="closePlayer('paramore')">✕</span></div>
-      <iframe id="pf-paramore" src="" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
     <div class="card-footer">
-      <span class="duration-label">⏱ Duração estimada</span>
-      <div class="duration-value">~18 min</div>
+      <span class="dur-label">⏱ Duração estimada</span>
+      <div class="dur-value">~18 min</div>
     </div>
   </div>
 
@@ -269,75 +386,81 @@
   <div class="card zonta">
     <div class="card-header"><div class="badge"></div><h2>Zonta</h2><span class="count">17 músicas</span></div>
     <div class="members-row">
-      <span class="member-chip">Neto</span><span class="member-chip">Higor</span><span class="member-chip">João</span>
-      <span class="member-chip">Bonatti</span><span class="member-chip">Negriel</span>
+      <span class="chip">Neto</span><span class="chip">Higor</span><span class="chip">João</span>
+      <span class="chip">Bonatti</span><span class="chip">Negriel</span>
     </div>
     <div class="setlist"><ol>
-      <li data-id="5pQLa8IaDMLRTF5PzrFrJX"><span class="song-name">Estresse</span><span class="play-icon">▶</span></li>
-      <li data-id="0hDch9vNiPTAP84ZgkMh08"><span class="song-name">Faço Arte (Mas Não Faço Dinheiro)</span><span class="play-icon">▶</span></li>
-      <li data-id="12rOQ4REKiHdA603KCMxoh"><span class="song-name">Tio Pobre</span><span class="play-icon">▶</span></li>
-      <li data-id="3MHcuNZuDUBpcqX4gxGcYc"><span class="song-name">Anamnese</span><span class="play-icon">▶</span></li>
-      <li data-id="1277GW0jz2qpKJMonbtHeW"><span class="song-name">A Cultura Pertence à Massa</span><span class="play-icon">▶</span></li>
-      <li data-id="068K7AF1C0ECBQB4ouwioE"><span class="song-name">Mussurunga</span><span class="play-icon">▶</span></li>
-      <li data-id="14yFd02PMvJWM1nq54GNvk"><span class="song-name">Entre o Céu e o Cerol</span><span class="play-icon">▶</span></li>
-      <li data-id="6onURbQdk3MZ0ypK9gRW6e"><span class="song-name">Queda de Energia</span><span class="play-icon">▶</span></li>
-      <li data-id="3QlgO9s5bPKJVvgQ31n8iQ"><span class="song-name">Doutor</span><span class="play-icon">▶</span></li>
-      <li data-id="309Jp1PcCGl5RHFc7WTMxC"><span class="song-name">Intro</span><span class="play-icon">▶</span></li>
-      <li data-id="3PuT4yqelVScDDgWqNrL9f"><span class="song-name">Sangrenta</span><span class="play-icon">▶</span></li>
-      <li data-id="59iY2OAq62VkYuKhBrf6DN"><span class="song-name">Litoral</span><span class="play-icon">▶</span></li>
-      <li data-id="6jg8VRSNUG41ldJHQ4E8f7"><span class="song-name">Suco</span><span class="play-icon">▶</span></li>
-      <li data-id="1q0K49elHzrqVMuuGMU5Ck"><span class="song-name">Bolha</span><span class="play-icon">▶</span></li>
-      <li data-id="0c6F8VtleCCfkbQAkWwzRm"><span class="song-name">Cartão Postal</span><span class="play-icon">▶</span></li>
-      <li data-id="6VceFornMLnO5Rjpda4wrr"><span class="song-name">Chuva</span><span class="play-icon">▶</span></li>
-      <li data-id="4Jop9aPn7CnlbwiUlGawoU"><span class="song-name">40 Graus</span><span class="play-icon">▶</span></li>
+      <li data-id="5pQLa8IaDMLRTF5PzrFrJX" data-band="Zonta"><span class="song-name">Estresse</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0hDch9vNiPTAP84ZgkMh08" data-band="Zonta"><span class="song-name">Faço Arte (Mas Não Faço Dinheiro)</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="12rOQ4REKiHdA603KCMxoh" data-band="Zonta"><span class="song-name">Tio Pobre</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="3MHcuNZuDUBpcqX4gxGcYc" data-band="Zonta"><span class="song-name">Anamnese</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1277GW0jz2qpKJMonbtHeW" data-band="Zonta"><span class="song-name">A Cultura Pertence à Massa</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="068K7AF1C0ECBQB4ouwioE" data-band="Zonta"><span class="song-name">Mussurunga</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="14yFd02PMvJWM1nq54GNvk" data-band="Zonta"><span class="song-name">Entre o Céu e o Cerol</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="6onURbQdk3MZ0ypK9gRW6e" data-band="Zonta"><span class="song-name">Queda de Energia</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="3QlgO9s5bPKJVvgQ31n8iQ" data-band="Zonta"><span class="song-name">Doutor</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="309Jp1PcCGl5RHFc7WTMxC" data-band="Zonta"><span class="song-name">Intro</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="3PuT4yqelVScDDgWqNrL9f" data-band="Zonta"><span class="song-name">Sangrenta</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="59iY2OAq62VkYuKhBrf6DN" data-band="Zonta"><span class="song-name">Litoral</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="6jg8VRSNUG41ldJHQ4E8f7" data-band="Zonta"><span class="song-name">Suco</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="1q0K49elHzrqVMuuGMU5Ck" data-band="Zonta"><span class="song-name">Bolha</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="0c6F8VtleCCfkbQAkWwzRm" data-band="Zonta"><span class="song-name">Cartão Postal</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="6VceFornMLnO5Rjpda4wrr" data-band="Zonta"><span class="song-name">Chuva</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
+      <li data-id="4Jop9aPn7CnlbwiUlGawoU" data-band="Zonta"><span class="song-name">40 Graus</span><span class="eq"><span></span><span></span><span></span></span><span class="play-icon">▶</span></li>
     </ol></div>
-    <div class="player-wrap" id="pw-zonta">
-      <div class="player-label"><span id="pl-zonta"></span><span class="player-close" onclick="closePlayer('zonta')">✕</span></div>
-      <iframe id="pf-zonta" src="" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
     <div class="card-footer">
-      <span class="duration-label">⏱ Duração estimada</span>
-      <div class="duration-value">~58 min</div>
+      <span class="dur-label">⏱ Duração estimada</span>
+      <div class="dur-value">~58 min</div>
     </div>
   </div>
 
 </div>
 
-<script>
-  const cardIds = ['minimal','ratm','nirvana','linkin','paramore','zonta'];
+<!-- GLOBAL PLAYER -->
+<div id="global-player">
+  <div id="player-info">
+    <div id="player-band"></div>
+    <div id="player-song"></div>
+    <div id="player-close" onclick="closeGlobalPlayer()">✕ fechar</div>
+  </div>
+  <div id="player-iframe-wrap">
+    <iframe id="global-iframe" src="" allowfullscreen
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"></iframe>
+  </div>
+</div>
 
-  function getCardId(li) {
-    const card = li.closest('.card');
-    for (const id of cardIds) {
-      if (card.classList.contains(id)) return id;
-    }
-    return null;
-  }
+<script>
+  let currentLi = null;
 
   document.querySelectorAll('li[data-id]').forEach(li => {
     li.addEventListener('click', () => {
-      const cardId = getCardId(li);
-      if (!cardId) return;
+      // Deactivate previous
+      if (currentLi && currentLi !== li) {
+        currentLi.classList.remove('playing');
+      }
+      currentLi = li;
+      li.classList.add('playing');
 
-      li.closest('ol').querySelectorAll('li').forEach(el => el.classList.remove('active'));
-      li.classList.add('active');
+      const id   = li.dataset.id;
+      const song = li.querySelector('.song-name').textContent;
+      const band = li.dataset.band;
 
-      const wrap  = document.getElementById('pw-' + cardId);
-      const frame = document.getElementById('pf-' + cardId);
-      const label = document.getElementById('pl-' + cardId);
+      document.getElementById('player-song').textContent = song;
+      document.getElementById('player-band').textContent = band;
+      document.getElementById('global-iframe').src =
+        'https://open.spotify.com/embed/track/' + id + '?utm_source=generator&theme=0';
 
-      label.textContent = '▶ ' + li.querySelector('.song-name').textContent;
-      frame.src = 'https://open.spotify.com/embed/track/' + li.dataset.id + '?utm_source=generator&theme=0';
-      wrap.classList.add('open');
+      document.getElementById('global-player').classList.add('open');
+      document.body.classList.add('player-open');
     });
   });
 
-  function closePlayer(cardId) {
-    const wrap  = document.getElementById('pw-' + cardId);
-    const frame = document.getElementById('pf-' + cardId);
-    wrap.classList.remove('open');
-    frame.src = '';
-    document.querySelectorAll('.card.' + cardId + ' li').forEach(el => el.classList.remove('active'));
+  function closeGlobalPlayer() {
+    document.getElementById('global-player').classList.remove('open');
+    document.body.classList.remove('player-open');
+    document.getElementById('global-iframe').src = '';
+    if (currentLi) { currentLi.classList.remove('playing'); currentLi = null; }
   }
 </script>
 </body>
