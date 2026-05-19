@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vem aí um som muito doido</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0f0f13;
+    color: #e8e8f0;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+  header { text-align: center; margin-bottom: 40px; }
+  header h1 {
+    font-size: 1.9rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+    gap: 18px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .card {
+    background: #18181f;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #2a2a35;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-header {
+    padding: 13px 17px 11px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #2a2a35;
+  }
+  .card-header .badge { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .card-header h2 { font-size: 0.88rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+  .card-header .count { margin-left: auto; font-size: 0.68rem; color: #555; letter-spacing: 0.05em; white-space: nowrap; }
+  .members-row { padding: 9px 17px; border-bottom: 1px solid #22222c; display: flex; flex-wrap: wrap; gap: 5px; }
+  .member-chip { font-size: 0.68rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #22222c; color: #aaa; border: 1px solid #2e2e3a; }
+  .member-chip.question { color: #888; font-style: italic; }
+  .setlist { padding: 11px 17px 0; flex: 1; }
+  .setlist ol { list-style: none; counter-reset: song; }
+  .setlist ol li { counter-increment: song; display: flex; align-items: baseline; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1e1e27; font-size: 0.8rem; color: #ccc; }
+  .setlist ol li:last-child { border-bottom: none; }
+  .setlist ol li::before { content: counter(song, decimal-leading-zero); font-size: 0.63rem; font-weight: 700; min-width: 20px; letter-spacing: 0.04em; }
+  .card-footer { margin-top: 11px; padding: 9px 17px 13px; border-top: 1px solid #22222c; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .duration-label { font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; color: #444; }
+  .duration-value { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em; }
+  .duration-note { font-size: 0.6rem; color: #3a3a4a; font-style: italic; text-align: right; margin-top: 2px; }
+
+  .indie .badge { background: #7c6af5; }
+  .indie .card-header { border-left: 3px solid #7c6af5; }
+  .indie .setlist ol li::before { color: #5444b0; }
+  .indie .duration-value { color: #7c6af5; }
+
+  .ratm .badge { background: #e84040; }
+  .ratm .card-header { border-left: 3px solid #e84040; }
+  .ratm .setlist ol li::before { color: #a02c2c; }
+  .ratm .duration-value { color: #e84040; }
+
+  .nirvana .badge { background: #4da6ff; }
+  .nirvana .card-header { border-left: 3px solid #4da6ff; }
+  .nirvana .setlist ol li::before { color: #2d6aad; }
+  .nirvana .duration-value { color: #4da6ff; }
+
+  .linkin .badge { background: #f5a623; }
+  .linkin .card-header { border-left: 3px solid #f5a623; }
+  .linkin .setlist ol li::before { color: #a87200; }
+  .linkin .duration-value { color: #f5a623; }
+
+  .paramore .badge { background: #f53ca3; }
+  .paramore .card-header { border-left: 3px solid #f53ca3; }
+  .paramore .setlist ol li::before { color: #a0296a; }
+  .paramore .duration-value { color: #f53ca3; }
+
+  .zonta .badge { background: #3cd68a; }
+  .zonta .card-header { border-left: 3px solid #3cd68a; }
+  .zonta .setlist ol li::before { color: #289e61; }
+  .zonta .duration-value { color: #3cd68a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Vem aí um som muito doido 🤘</h1>
+</header>
+<div class="grid">
+
+  <div class="card indie">
+    <div class="card-header"><div class="badge"></div><h2>Indie</h2><span class="count">14 músicas</span></div>
+    <div class="members-row">
+      <span class="member-chip">Laura</span><span class="member-chip">Markin</span><span class="member-chip">Paulin</span>
+      <span class="member-chip">Jeffin</span><span class="member-chip">Malik</span><span class="member-chip">Danilo</span>
+    </div>
+    <div class="setlist"><ol>
+      <li>Quase um Mistério</li><li>De Outra Encarnação</li><li>Primeiro Ato</li><li>Calendário</li>
+      <li>Shake It Out</li><li>Doin Time</li><li>Happier Than Ever</li><li>Green Light</li>
+      <li>Drop The Game</li><li>Little Black Submarines</li><li>Natural</li><li>The Man</li>
+      <li>Little Talks</li><li>Dog Days Are Over</li>
+    </ol></div>
+    <div class="card-footer">
+      <span class="duration-label">⏱ Duração estimada</span>
+      <div><div class="duration-value">~56 min</div><div class="duration-note">4 músicas c/ dur. estimada</div></div>
+    </div>
+  </div>
+
+  <div class="card ratm">
+    <div class="card-header"><div class="badge"></div><h2>Rage Against the Machine</h2><span class="count">7 músicas</span></div>
+    <div class="members-row">
+      <span class="member-chip">Neto</span><span class="member-chip">Markin</span>
+      <span class="member-chip">Paulin</span><span class="member-chip">Higor</span>
+    </div>
+    <div class="setlist"><ol>
+      <li>Killing in the Name</li><li>Bulls on Parade</li><li>Guerrilla Radio</li>
+      <li>Know Your Enemy</li><li>Sleep Now in the Fire</li><li>Testify</li><li>Bullet in the Head</li>
+    </ol></div>
+    <div class="card-footer">
+      <span class="duration-label">⏱ Duração estimada</span>
+      <div class="duration-value">~30 min</div>
+    </div>
+  </div>
+
+  <div class="card nirvana">
+    <div class="card-header"><div class="badge"></div><h2>Nirvana</h2><span class="count">5 músicas</span></div>
+    <div class="members-row">
+      <span class="member-chip">Hugo</span><span class="member-chip">Markin</span><span class="member-chip">Paulin</span>
+      <span class="member-chip">Volpi</span><span class="member-chip question">Jeffin?</span>
+    </div>
+    <div class="setlist"><ol>
+      <li>Heart-Shaped Box</li><li>All Apologies</li><li>In Bloom</li><li>Lithium</li><li>About a Girl</li>
+    </ol></div>
+    <div class="card-footer">
+      <span class="duration-label">⏱ Duração estimada</span>
+      <div class="duration-value">~20 min</div>
+    </div>
+  </div>
+
+  <div class="card linkin">
+    <div class="card-header"><div class="badge"></div><h2>Linkin Park</h2><span class="count">5 músicas</span></div>
+    <div class="members-row">
+      <span class="member-chip">Raul</span><span class="member-chip">Neto</span><span class="member-chip">Markin</span>
+      <span class="member-chip">Paulin</span><span class="member-chip">Volpi</span><span class="member-chip">Jeffin</span>
+    </div>
+    <div class="setlist"><ol>
+      <li>Points of Authority</li><li>Faint</li><li>Crawling</li><li>A Place For My Head</li><li>With You</li>
+    </ol></div>
+    <div class="card-footer">
+      <span class="duration-label">⏱ Duração estimada</span>
+      <div class="duration-value">~16 min</div>
+    </div>
+  </div>
+
+  <div class="card paramore">
+    <div class="card-header"><div class="badge"></div><h2>Paramore</h2><span class="count">5 músicas</span></div>
+    <div class="members-row">
+      <span class="member-chip">Laura</span><span class="member-chip">Markin</span><span class="member-chip">Paulin</span>
+      <span class="member-chip">Jeffin</span><span class="member-chip">Malik</span><span class="member-chip">Danilo</span>
+      <span class="member-chip question">Volpi?</span>
+    </div>
+    <div class="setlist"><ol>
+      <li>Misery Business</li><li>Ignorance</li><li>That's What You Get</li><li>Monster</li><li>Ain't Fun</li>
+    </ol></div>
+    <div class="card-footer">
+      <span class="duration-label">⏱ Duração estimada</span>
+      <div class="duration-value">~18 min</div>
+    </div>
+  </div>
+
+  <div class="card zonta">
+    <div class="card-header"><div class="badge"></div><h2>Zonta</h2><span class="count">10 músicas</span></div>
+    <div class="members-row">
+      <span class="member-chip">Neto</span><span class="member-chip">Higor</span><span class="member-chip">João</span>
+      <span class="member-chip">Bonatti</span><span class="member-chip">Negriel</span>
+    </div>
+    <div class="setlist"><ol>
+      <li>Zonta 1</li><li>Zonta 2</li><li>Zonta 3</li><li>Zonta 4</li><li>Zonta 5</li>
+      <li>Zonta 6</li><li>Zonta 7</li><li>Zonta 8</li><li>Zonta 9</li><li>Zonta 10</li>
+    </ol></div>
+    <div class="card-footer">
+      <span class="duration-label">⏱ Duração estimada</span>
+      <div><div class="duration-value">—</div><div class="duration-note">músicas ainda não identificadas</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
